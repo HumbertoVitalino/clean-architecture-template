@@ -83,9 +83,9 @@ develop ◄──────────────── ◄─────�
 
 ## Estado
 
-| Develop   | Status     |
-|-----------|------------|
-| Develop 1 | `pending`  |
-| Develop 2 | `pending`  |
-| Develop 3 | `pending`  |
-| Develop 4 | `pending`  |
+| Develop   | Status        | Observação                                              |
+|-----------|---------------|---------------------------------------------------------|
+| Develop 1 | `done`        | features 1–3 merged em develop e release                |
+| Develop 2 | `done`        | features 4–6 merged em develop                          |
+| Develop 3 | `in progress` | feature/7 merged; features 8–10 pendentes               |
+| Develop 4 | `pending`     | aguarda Develop 3                                       |
