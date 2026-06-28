@@ -49,7 +49,7 @@ public sealed class GetUserByIdUseCaseTests
         var input = new GetUserByIdInput(Guid.NewGuid());
         _repositoryMock
             .Setup(r => r.GetByIdAsync(input.Id, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(null);
+            .Returns(Task.FromResult<User?>(null));
 
         // Act
         var output = await _sut.ExecuteAsync(input);
