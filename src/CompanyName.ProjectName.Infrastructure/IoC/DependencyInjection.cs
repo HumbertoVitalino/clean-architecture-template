@@ -1,0 +1,29 @@
+using CompanyName.ProjectName.Application.Interfaces.Repositories;
+using CompanyName.ProjectName.Application.Interfaces.Services;
+using CompanyName.ProjectName.Infrastructure.Persistence;
+using CompanyName.ProjectName.Infrastructure.Persistence.Repositories;
+using CompanyName.ProjectName.Infrastructure.Services;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace CompanyName.ProjectName.Infrastructure.IoC;
+
+public static class DependencyInjection
+{
+    public static IServiceCollection AddInfrastructure(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        services.AddDbContext<AppDbContext>(options =>
+            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IDomainEventDispatcher, DomainEventDispatcher>();
+
+        services.AddHttpContextAccessor();
+        services.AddScoped<ICurrentUserService, CurrentUserService>();
+
+        return services;
+    }
+}
