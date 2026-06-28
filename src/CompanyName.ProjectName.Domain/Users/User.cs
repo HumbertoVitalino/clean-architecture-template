@@ -30,4 +30,7 @@ public sealed class User : AggregateRoot<Guid>
     {
         Email = Email.Create(email);
     }
+
+    public static User Reconstitute(Guid id, Email email, string name) =>
+        new(id, email, name);
 }

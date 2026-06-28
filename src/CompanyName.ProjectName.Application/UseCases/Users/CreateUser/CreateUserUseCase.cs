@@ -8,25 +8,19 @@ using CompanyName.ProjectName.Domain.Users;
 
 namespace CompanyName.ProjectName.Application.UseCases.Users.CreateUser;
 
-public sealed class CreateUserUseCase : ICreateUserUseCase
+public sealed class CreateUserUseCase(
+    IUserRepository repository,
+    CreateUserInputValidator validator
+) : ICreateUserUseCase
 {
-    private readonly IUserRepository _repository;
-    private readonly CreateUserInputValidator _validator;
-
-    public CreateUserUseCase(IUserRepository repository, CreateUserInputValidator validator)
-    {
-        _repository = repository;
-        _validator = validator;
-    }
-
     public async Task<Output> ExecuteAsync(CreateUserInput input, CancellationToken cancellationToken = default)
     {
-        var validationResult = _validator.Validate(input);
+        var validationResult = validator.Validate(input);
         if (!validationResult.IsValid)
             return new Output(validationResult);
 
         var email = Email.Create(input.Email);
-        if (await _repository.ExistsWithEmailAsync(email, cancellationToken))
+        if (await repository.ExistsWithEmailAsync(email, cancellationToken))
         {
             var output = new Output();
             output.AddErrorMessage(UserErrors.EmailAlreadyInUse);
@@ -36,7 +30,16 @@ public sealed class CreateUserUseCase : ICreateUserUseCase
         try
         {
             var user = User.Create(input.Email, input.Name);
-            await _repository.AddAsync(user, cancellationToken);
+            await repository.AddAsync(user, cancellationToken);
+
+            var committed = await repository.UnitOfWork.CommitAsync(cancellationToken);
+            if (!committed)
+            {
+                var output = new Output();
+                output.AddErrorMessage("Failed to persist user.");
+                return output;
+            }
+
             return new Output(user.MapToOutput());
         }
         catch (DomainException ex)

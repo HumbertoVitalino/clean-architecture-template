@@ -1,6 +1,6 @@
 namespace CompanyName.ProjectName.Domain.Abstractions;
 
-public abstract class AggregateRoot<TId>
+public abstract class AggregateRoot<TId> : IAggregateRoot
 {
     private readonly List<IDomainEvent> _domainEvents = [];
 
