@@ -1,0 +1,57 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "Humberto Vitalino",
+  "classifications": ["Web", "API", "Clean Architecture", "DDD"],
+  "identity": "CleanArchitecture.DDD.Template",
+  "name": "Clean Architecture DDD Template",
+  "shortName": "clean-arch",
+  "sourceName": "CompanyName.ProjectName",
+  "preferNameDirectory": true,
+  "tags": {
+    "language": "C#",
+    "type": "solution"
+  },
+  "symbols": {
+    "useControllers": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "false",
+      "description": "Use MVC Controllers instead of Minimal API endpoints."
+    },
+    "useMediatR": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "false",
+      "description": "Include MediatR for CQRS command/query dispatching."
+    }
+  },
+  "sources": [
+    {
+      "modifiers": [
+        {
+          "exclude": [
+            "CONTEXT.md",
+            "PLAN.md",
+            ".git/**",
+            ".claude/**",
+            ".vs/**",
+            "**/bin/**",
+            "**/obj/**"
+          ]
+        },
+        {
+          "condition": "(!useControllers)",
+          "exclude": [
+            "src/CompanyName.ProjectName.Api/Controllers/**"
+          ]
+        },
+        {
+          "condition": "(useControllers)",
+          "exclude": [
+            "src/CompanyName.ProjectName.Api/Endpoints/**"
+          ]
+        }
+      ]
+    }
+  ]
+}
