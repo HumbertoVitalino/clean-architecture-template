@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>CompanyName.ProjectName.Infrastructure</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CompanyName.ProjectName.Domain\CompanyName.ProjectName.Domain.csproj" />
+    <ProjectReference Include="..\CompanyName.ProjectName.Application\CompanyName.ProjectName.Application.csproj" />
+  </ItemGroup>
+
+</Project>
