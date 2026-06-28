@@ -82,20 +82,20 @@ jobs:
 
       - name: Open PR develop → release
         if: steps.check-release.outputs.exists == 'true'
-        uses: peter-evans/create-pull-request@v7
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          base: release
-          head: develop
-          title: 'release: promote develop to release'
-          body: |
-            ## Automated Release PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr create \
+            --base release \
+            --head develop \
+            --title "release: promote develop to release" \
+            --body "## Automated Release PR
 
-            All CI checks passed on `develop`. This PR was opened automatically.
+          All CI checks passed on \`develop\`. This PR was opened automatically.
 
-            ### Checklist
-            - [ ] Review changes
-            - [ ] Confirm all tests passed in CI
-            - [ ] Approve and merge to trigger deployment
-          labels: release
-          draft: false
+          ### Checklist
+          - [ ] Review changes
+          - [ ] Confirm all tests passed in CI
+          - [ ] Approve and merge to trigger deployment" \
+            --label release \
+          || echo "::notice::PR already exists between develop and release."
