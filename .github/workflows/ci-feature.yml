@@ -20,10 +20,10 @@ jobs:
           dotnet-version: '10.x'
 
       - name: Restore
-        run: dotnet restore
+        run: dotnet restore CompanyName.ProjectName.slnx
 
       - name: Build
-        run: dotnet build --no-restore --configuration Release
+        run: dotnet build CompanyName.ProjectName.slnx --no-restore --configuration Release
 
   unit-tests:
     name: Unit Tests
@@ -40,7 +40,7 @@ jobs:
           dotnet-version: '10.x'
 
       - name: Restore
-        run: dotnet restore
+        run: dotnet restore CompanyName.ProjectName.slnx
 
       - name: Unit Tests
         run: >
@@ -72,7 +72,7 @@ jobs:
           dotnet-version: '10.x'
 
       - name: Restore
-        run: dotnet restore
+        run: dotnet restore CompanyName.ProjectName.slnx
 
       - name: Start SQL Server
         run: docker compose -f docker-compose.tests.yml up -d
@@ -123,7 +123,7 @@ jobs:
           dotnet-version: '10.x'
 
       - name: Restore
-        run: dotnet restore
+        run: dotnet restore CompanyName.ProjectName.slnx
 
       - name: Functional Tests
         run: >
