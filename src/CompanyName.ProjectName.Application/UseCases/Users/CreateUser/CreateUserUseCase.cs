@@ -3,7 +3,6 @@ using CompanyName.ProjectName.Application.Interfaces.Repositories;
 using CompanyName.ProjectName.Application.Interfaces.UseCases;
 using CompanyName.ProjectName.Application.UseCases.Users.CreateUser.Boundaries;
 using CompanyName.ProjectName.Application.UseCases.Users.CreateUser.Mapper;
-using CompanyName.ProjectName.Domain.Abstractions;
 using CompanyName.ProjectName.Domain.Users;
 
 namespace CompanyName.ProjectName.Application.UseCases.Users.CreateUser;
@@ -27,26 +26,17 @@ public sealed class CreateUserUseCase(
             return output;
         }
 
-        try
-        {
-            var user = User.Create(input.Email, input.Name);
-            await repository.AddAsync(user, cancellationToken);
+        var user = User.Create(input.Email, input.Name);
+        await repository.AddAsync(user, cancellationToken);
 
-            var committed = await repository.UnitOfWork.CommitAsync(cancellationToken);
-            if (!committed)
-            {
-                var output = new Output();
-                output.AddErrorMessage("Failed to persist user.");
-                return output;
-            }
-
-            return new Output(user.MapToOutput());
-        }
-        catch (DomainException ex)
+        var committed = await repository.UnitOfWork.CommitAsync(cancellationToken);
+        if (!committed)
         {
             var output = new Output();
-            output.AddErrorMessage(ex.Message);
+            output.AddErrorMessage("Failed to persist user.");
             return output;
         }
+
+        return new Output(user.MapToOutput());
     }
 }

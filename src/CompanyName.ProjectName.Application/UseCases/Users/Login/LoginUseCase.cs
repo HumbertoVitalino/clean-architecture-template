@@ -10,23 +10,21 @@ namespace CompanyName.ProjectName.Application.UseCases.Users.Login;
 
 internal sealed class LoginUseCase(
     IUserRepository repository,
-    IJwtService jwtService
+    IJwtService jwtService,
+    LoginInputValidator validator
 ) : ILoginUseCase
 {
     public async Task<Output> ExecuteAsync(LoginInput input, CancellationToken cancellationToken = default)
     {
-        Email email;
-        try
-        {
-            email = Email.Create(input.Email);
-        }
-        catch
+        var validationResult = validator.Validate(input);
+        if (!validationResult.IsValid)
         {
             var invalid = new Output();
             invalid.AddErrorMessage("Invalid credentials.");
             return invalid;
         }
 
+        var email = Email.Create(input.Email);
         var user = await repository.GetByEmailAsync(email, cancellationToken);
         if (user is null)
         {
