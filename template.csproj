@@ -1,0 +1,48 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <PackageId>HumbertoVitalino.CleanArchitecture.Template</PackageId>
+    <PackageType>Template</PackageType>
+    <PackageVersion>1.0.0</PackageVersion>
+    <Title>Clean Architecture API Template</Title>
+    <Authors>HumbertoVitalino</Authors>
+    <Description>A .NET 10 Clean Architecture template with DDD, JWT auth, EF Core SQL Server, integration tests and Docker support.</Description>
+    <PackageTags>template;dotnet;clean-architecture;ddd;api;csharp</PackageTags>
+    <PackageProjectUrl>https://github.com/HumbertoVitalino/clean-architecture-template</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/HumbertoVitalino/clean-architecture-template</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <TargetFramework>net10.0</TargetFramework>
+    <IncludeContentInPack>true</IncludeContentInPack>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <ContentTargetFolders>content</ContentTargetFolders>
+    <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+    <NoDefaultExcludes>true</NoDefaultExcludes>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="**\*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Hidden files/dirs excluded by default SDK globs — include explicitly -->
+    <Content Include=".template.config\**\*" />
+    <Content Include=".dockerignore" />
+    <Content Include=".env.example" />
+    <Content Include=".github\**\*" />
+
+    <!-- Source and test files -->
+    <Content Include="src\**\*" Exclude="src\**\bin\**;src\**\obj\**;**\*.user" />
+    <Content Include="tests\**\*" Exclude="tests\**\bin\**;tests\**\obj\**;**\*.user;**\*.trx;**\TestResults\**" />
+
+    <!-- Root files -->
+    <Content Include="*.slnx" />
+    <Content Include="*.props" />
+    <Content Include="Dockerfile" />
+    <Content Include="docker-compose.yml" />
+
+    <!-- README at package root (not under content/) -->
+    <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+</Project>

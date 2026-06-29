@@ -57,7 +57,7 @@ jobs:
           dotnet-version: '10.x'
 
       - name: Pack template
-        run: dotnet pack --configuration Release --output ./nupkg
+        run: dotnet pack template.csproj --configuration Release --output ./nupkg
 
       - name: Push to NuGet
         run: >
