@@ -14,16 +14,10 @@ COPY src/CompanyName.ProjectName.Api/CompanyName.ProjectName.Api.csproj \
 
 RUN dotnet restore src/CompanyName.ProjectName.Api/CompanyName.ProjectName.Api.csproj
 
-FROM restore AS build
+FROM restore AS publish
 COPY src/ src/
-RUN dotnet build src/CompanyName.ProjectName.Api/CompanyName.ProjectName.Api.csproj \
-    --no-restore \
-    --configuration Release
-
-FROM build AS publish
 RUN dotnet publish src/CompanyName.ProjectName.Api/CompanyName.ProjectName.Api.csproj \
     --no-restore \
-    --no-build \
     --configuration Release \
     --output /app/publish
 
