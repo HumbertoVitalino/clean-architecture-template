@@ -14,10 +14,9 @@ builder.Services
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
-{
     app.MapOpenApi();
-    app.Services.MigrateDatabase();
-}
+
+app.Services.MigrateDatabase();
 
 app.UseMiddleware<CorrelationIdMiddleware>();
 app.UseExceptionHandler();
