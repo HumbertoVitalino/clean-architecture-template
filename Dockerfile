@@ -1,6 +1,8 @@
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS restore
 WORKDIR /app
 
+COPY Directory.Build.props .
+
 COPY src/CompanyName.ProjectName.Domain/CompanyName.ProjectName.Domain.csproj \
      src/CompanyName.ProjectName.Domain/
 COPY src/CompanyName.ProjectName.Application/CompanyName.ProjectName.Application.csproj \
