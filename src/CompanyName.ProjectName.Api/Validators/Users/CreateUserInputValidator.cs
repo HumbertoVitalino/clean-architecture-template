@@ -1,11 +1,12 @@
+using CompanyName.ProjectName.Api.Requests.Users;
 using CompanyName.ProjectName.Domain.Users;
 using FluentValidation;
 
-namespace CompanyName.ProjectName.Application.UseCases.Users.CreateUser.Boundaries;
+namespace CompanyName.ProjectName.Api.Validators.Users;
 
-public sealed class CreateUserInputValidator : AbstractValidator<CreateUserInput>
+public sealed class CreateUserRequestValidator : AbstractValidator<CreateUserRequest>
 {
-    public CreateUserInputValidator()
+    public CreateUserRequestValidator()
     {
         RuleFor(x => x.Name)
             .NotEmpty()

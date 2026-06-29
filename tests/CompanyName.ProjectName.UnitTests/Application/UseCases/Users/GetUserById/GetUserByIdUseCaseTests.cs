@@ -4,6 +4,7 @@ using CompanyName.ProjectName.Application.UseCases.Users.GetUserById;
 using CompanyName.ProjectName.Application.UseCases.Users.GetUserById.Boundaries;
 using CompanyName.ProjectName.Domain.Users;
 using FluentAssertions;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using Xunit;
 
@@ -17,7 +18,7 @@ public sealed class GetUserByIdUseCaseTests
     public GetUserByIdUseCaseTests()
     {
         _repositoryMock = new Mock<IUserRepository>();
-        _sut = new GetUserByIdUseCase(_repositoryMock.Object);
+        _sut = new GetUserByIdUseCase(_repositoryMock.Object, NullLogger<GetUserByIdUseCase>.Instance);
     }
 
     [Fact(DisplayName = "ExecuteAsync >> Should Return Success Output With User Response >> When User Exists")]
