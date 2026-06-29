@@ -1,95 +1,34 @@
-using FluentValidation.Results;
-
 namespace CompanyName.ProjectName.Application.Commons;
 
 public class Output
 {
-    private readonly List<string> _messages = new();
-    private List<string> _errorMessages = new();
+    private readonly List<string> _messages = [];
+    private readonly List<string> _errorMessages = [];
 
-    public IReadOnlyCollection<string>? ErrorMessages => _errorMessages?.AsReadOnly();
-    public bool IsValid { get; private set; }
-    public IReadOnlyCollection<string>? Messages => _messages?.AsReadOnly();
+    public IReadOnlyCollection<string> ErrorMessages => _errorMessages.AsReadOnly();
+    public bool IsValid { get; private set; } = true;
+    public IReadOnlyCollection<string> Messages => _messages.AsReadOnly();
     public object? Result { get; private set; }
-
-    public Output() => IsValid = true;
-
-    public Output(object result)
-    {
-        IsValid = true;
-        AddResult(result);
-    }
-
-    public Output(ValidationResult validationResult) => ProcessValidationResults(validationResult);
-    public Output(IEnumerable<ValidationResult> validationResults) => ProcessValidationResults(validationResults.ToArray());
-
-    private void ProcessValidationResults(params ValidationResult[] validationResults)
-    {
-        foreach (var validationResult in validationResults)
-            AddValidationResult(validationResult);
-
-        VerifyValidty();
-    }
-
-    private void VerifyErrorMessages(ValidationResult validationResult)
-    {
-        _errorMessages ??= new List<string>();
-        _errorMessages.AddRange(validationResult.Errors.Select(e => e.ErrorMessage));
-    }
-
-    private void VerifyValidty() => IsValid = ErrorMessages?.Count == 0;
 
     public void AddErrorMessage(string message)
     {
-        if (string.IsNullOrEmpty(message))
-            throw new ArgumentException("message is null");
-
         _errorMessages.Add(message);
-        VerifyValidty();
+        IsValid = false;
     }
 
-    public void AddErrorMessages(params string[] messages)
+    public void AddErrorMessages(IEnumerable<string> messages)
     {
-        foreach (var text in messages)
-        {
-            if (string.IsNullOrEmpty(text))
-                throw new ArgumentException("message is null");
-
-            _errorMessages.Add(text);
-        }
-
-        VerifyValidty();
+        _errorMessages.AddRange(messages);
+        IsValid = false;
     }
 
-    public void AddMessage(string message)
-    {
-        if (string.IsNullOrEmpty(message))
-            throw new ArgumentException("message is null");
-
-        _messages.Add(message);
-    }
-
-    public void AddMessages(params string[] messages)
-    {
-        foreach (var text in messages)
-        {
-            if (string.IsNullOrEmpty(text))
-                throw new ArgumentException("message is null");
-
-            _messages.Add(text);
-        }
-    }
+    public void AddMessage(string message) => _messages.Add(message);
 
     public void AddResult(object result)
     {
-        Result = result ?? throw new NullReferenceException();
+        Result = result;
         IsValid = true;
     }
 
-    public void AddValidationResult(ValidationResult validationResult) =>
-        VerifyErrorMessages(validationResult);
-
     public T? GetResult<T>() => (T?)Result;
-
-    public void SetToInvalid() => IsValid = false;
 }

@@ -8,32 +8,22 @@ using CompanyName.ProjectName.Domain.Users;
 
 namespace CompanyName.ProjectName.Application.UseCases.Users.Login;
 
-internal sealed class LoginUseCase(
-    IUserRepository repository,
-    IJwtService jwtService,
-    LoginInputValidator validator
-) : ILoginUseCase
+internal sealed class LoginUseCase(IUserRepository repository, IJwtService jwtService) : ILoginUseCase
 {
     public async Task<Output> ExecuteAsync(LoginInput input, CancellationToken cancellationToken = default)
     {
-        var validationResult = validator.Validate(input);
-        if (!validationResult.IsValid)
-        {
-            var invalid = new Output();
-            invalid.AddErrorMessage("Invalid credentials.");
-            return invalid;
-        }
+        Output output = new();
 
         var email = Email.Create(input.Email);
         var user = await repository.GetByEmailAsync(email, cancellationToken);
         if (user is null)
         {
-            var invalid = new Output();
-            invalid.AddErrorMessage("Invalid credentials.");
-            return invalid;
+            output.AddErrorMessage("Invalid credentials.");
+            return output;
         }
 
         var token = jwtService.GenerateToken(user.Id.ToString(), user.Email.Value);
-        return new Output(new LoginResponse(token));
+        output.AddResult(new LoginResponse(token));
+        return output;
     }
 }

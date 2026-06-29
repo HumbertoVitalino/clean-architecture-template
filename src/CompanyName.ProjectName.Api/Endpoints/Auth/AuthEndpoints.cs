@@ -1,3 +1,4 @@
+using CompanyName.ProjectName.Api.Validators.Auth;
 using CompanyName.ProjectName.Application.DTOs.Users;
 using CompanyName.ProjectName.Application.Interfaces.UseCases;
 using CompanyName.ProjectName.Application.UseCases.Users.Login.Boundaries;
@@ -11,8 +12,13 @@ public static class AuthEndpoints
         app.MapPost("/api/auth/login", async (
             LoginInput input,
             ILoginUseCase useCase,
+            LoginInputValidator validator,
             CancellationToken ct) =>
         {
+            var validation = validator.Validate(input);
+            if (!validation.IsValid)
+                return Results.Unauthorized();
+
             var output = await useCase.ExecuteAsync(input, ct);
 
             if (!output.IsValid)

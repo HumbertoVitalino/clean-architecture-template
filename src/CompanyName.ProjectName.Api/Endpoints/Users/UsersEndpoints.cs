@@ -1,3 +1,4 @@
+using CompanyName.ProjectName.Api.Validators.Users;
 using CompanyName.ProjectName.Application.DTOs.Users;
 using CompanyName.ProjectName.Application.Interfaces.UseCases;
 using CompanyName.ProjectName.Application.UseCases.Users.CreateUser.Boundaries;
@@ -16,8 +17,13 @@ public static class UsersEndpoints
         group.MapPost("", async (
             CreateUserInput input,
             ICreateUserUseCase useCase,
+            CreateUserInputValidator validator,
             CancellationToken ct) =>
         {
+            var validation = validator.Validate(input);
+            if (!validation.IsValid)
+                return Results.BadRequest(validation.Errors.Select(e => e.ErrorMessage));
+
             var output = await useCase.ExecuteAsync(input, ct);
 
             if (!output.IsValid)

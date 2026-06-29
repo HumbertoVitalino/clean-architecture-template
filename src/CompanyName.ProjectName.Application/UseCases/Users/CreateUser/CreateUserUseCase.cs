@@ -7,21 +7,15 @@ using CompanyName.ProjectName.Domain.Users;
 
 namespace CompanyName.ProjectName.Application.UseCases.Users.CreateUser;
 
-public sealed class CreateUserUseCase(
-    IUserRepository repository,
-    CreateUserInputValidator validator
-) : ICreateUserUseCase
+public sealed class CreateUserUseCase(IUserRepository repository) : ICreateUserUseCase
 {
     public async Task<Output> ExecuteAsync(CreateUserInput input, CancellationToken cancellationToken = default)
     {
-        var validationResult = validator.Validate(input);
-        if (!validationResult.IsValid)
-            return new Output(validationResult);
+        Output output = new();
 
         var email = Email.Create(input.Email);
         if (await repository.ExistsWithEmailAsync(email, cancellationToken))
         {
-            var output = new Output();
             output.AddErrorMessage(UserErrors.EmailAlreadyInUse);
             return output;
         }
@@ -32,11 +26,11 @@ public sealed class CreateUserUseCase(
         var committed = await repository.UnitOfWork.CommitAsync(cancellationToken);
         if (!committed)
         {
-            var output = new Output();
             output.AddErrorMessage("Failed to persist user.");
             return output;
         }
 
-        return new Output(user.MapToOutput());
+        output.AddResult(user.MapToOutput());
+        return output;
     }
 }

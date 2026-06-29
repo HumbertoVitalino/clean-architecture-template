@@ -17,7 +17,7 @@ public sealed class CreateUserUseCaseTests(DatabaseFixture fixture)
         // Arrange
         using var scope = fixture.Services.CreateScope();
         var useCase = scope.ServiceProvider.GetRequiredService<ICreateUserUseCase>();
-        var input = new CreateUserInput($"{Guid.NewGuid():N}@example.com", "John Doe");
+        var input = new CreateUserInput("John Doe", $"{Guid.NewGuid():N}@example.com");
 
         // Act
         var output = await useCase.ExecuteAsync(input);
@@ -38,26 +38,10 @@ public sealed class CreateUserUseCaseTests(DatabaseFixture fixture)
         var useCase = scope.ServiceProvider.GetRequiredService<ICreateUserUseCase>();
         var email = $"{Guid.NewGuid():N}@example.com";
 
-        await useCase.ExecuteAsync(new CreateUserInput(email, "First User"));
+        await useCase.ExecuteAsync(new CreateUserInput("First User", email));
 
         // Act
-        var output = await useCase.ExecuteAsync(new CreateUserInput(email, "Second User"));
-
-        // Assert
-        output.IsValid.Should().BeFalse();
-        output.ErrorMessages.Should().NotBeEmpty();
-    }
-
-    [Fact(DisplayName = "ExecuteAsync >> Should Return Error >> When Input Is Invalid")]
-    public async Task ExecuteAsync_ShouldReturnError_WhenInputIsInvalid()
-    {
-        // Arrange
-        using var scope = fixture.Services.CreateScope();
-        var useCase = scope.ServiceProvider.GetRequiredService<ICreateUserUseCase>();
-        var input = new CreateUserInput("not-an-email", string.Empty);
-
-        // Act
-        var output = await useCase.ExecuteAsync(input);
+        var output = await useCase.ExecuteAsync(new CreateUserInput("Second User", email));
 
         // Assert
         output.IsValid.Should().BeFalse();

@@ -1,7 +1,8 @@
+using CompanyName.ProjectName.Application.UseCases.Users.CreateUser.Boundaries;
 using CompanyName.ProjectName.Domain.Users;
 using FluentValidation;
 
-namespace CompanyName.ProjectName.Application.UseCases.Users.CreateUser.Boundaries;
+namespace CompanyName.ProjectName.Api.Validators.Users;
 
 public sealed class CreateUserInputValidator : AbstractValidator<CreateUserInput>
 {

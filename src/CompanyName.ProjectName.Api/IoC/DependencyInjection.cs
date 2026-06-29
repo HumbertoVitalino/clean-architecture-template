@@ -1,4 +1,6 @@
 using System.Text;
+using CompanyName.ProjectName.Api.Validators.Auth;
+using CompanyName.ProjectName.Api.Validators.Users;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
@@ -30,6 +32,9 @@ public static class DependencyInjection
 
         services.AddAuthorization();
         services.AddProblemDetails();
+
+        services.AddScoped<CreateUserInputValidator>();
+        services.AddScoped<LoginInputValidator>();
 
         services.AddOpenApi(options =>
         {
