@@ -1,56 +1,33 @@
 {
   "$schema": "http://json.schemastore.org/template",
-  "author": "Humberto Vitalino",
-  "classifications": ["Web", "API", "Clean Architecture", "DDD"],
-  "identity": "CleanArchitecture.DDD.Template",
-  "name": "Clean Architecture DDD Template",
+  "author": "HumbertoVitalino",
+  "classifications": ["Web", "API"],
+  "identity": "HumbertoVitalino.CleanArchitecture.Template",
+  "name": "Clean Architecture API",
+  "description": "A .NET 10 Clean Architecture template with DDD, JWT auth, EF Core SQL Server, integration tests and Docker support.",
   "shortName": "clean-arch",
-  "sourceName": "CompanyName.ProjectName",
-  "preferNameDirectory": true,
+  "language": "C#",
   "tags": {
     "language": "C#",
     "type": "solution"
   },
-  "symbols": {
-    "useControllers": {
-      "type": "parameter",
-      "datatype": "bool",
-      "defaultValue": "false",
-      "description": "Use MVC Controllers instead of Minimal API endpoints."
-    },
-    "useMediatR": {
-      "type": "parameter",
-      "datatype": "bool",
-      "defaultValue": "false",
-      "description": "Include MediatR for CQRS command/query dispatching."
-    }
-  },
+  "sourceName": "CompanyName.ProjectName",
+  "preferNameDirectory": true,
   "sources": [
     {
-      "modifiers": [
-        {
-          "exclude": [
-            "CONTEXT.md",
-            "PLAN.md",
-            ".git/**",
-            ".claude/**",
-            ".vs/**",
-            "**/bin/**",
-            "**/obj/**"
-          ]
-        },
-        {
-          "condition": "(!useControllers)",
-          "exclude": [
-            "src/CompanyName.ProjectName.Api/Controllers/**"
-          ]
-        },
-        {
-          "condition": "(useControllers)",
-          "exclude": [
-            "src/CompanyName.ProjectName.Api/Endpoints/**"
-          ]
-        }
+      "exclude": [
+        "**/[Bb]in/**",
+        "**/[Oo]bj/**",
+        "**/.vs/**",
+        "**/.idea/**",
+        ".git/**",
+        ".env",
+        "**/*.user",
+        "template.csproj",
+        "**/*.trx",
+        "**/TestResults/**",
+        "PLAN.md",
+        "CONTEXT.md"
       ]
     }
   ]
