@@ -5,6 +5,7 @@ using CompanyName.ProjectName.Application.UseCases.Users.CreateUser;
 using CompanyName.ProjectName.Application.UseCases.Users.CreateUser.Boundaries;
 using CompanyName.ProjectName.Domain.Users;
 using FluentAssertions;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using Xunit;
 
@@ -21,7 +22,7 @@ public sealed class CreateUserUseCaseTests
         _repositoryMock = new Mock<IUserRepository>();
         _unitOfWorkMock = new Mock<IUnitOfWork>();
         _repositoryMock.Setup(r => r.UnitOfWork).Returns(_unitOfWorkMock.Object);
-        _sut = new CreateUserUseCase(_repositoryMock.Object);
+        _sut = new CreateUserUseCase(_repositoryMock.Object, NullLogger<CreateUserUseCase>.Instance);
     }
 
     [Fact(DisplayName = "ExecuteAsync >> Should Return Success Output With User Response >> When Input Is Valid")]

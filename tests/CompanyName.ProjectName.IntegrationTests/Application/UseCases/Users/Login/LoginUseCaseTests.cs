@@ -21,7 +21,7 @@ public sealed class LoginUseCaseTests(DatabaseFixture fixture)
         var loginUseCase = scope.ServiceProvider.GetRequiredService<ILoginUseCase>();
 
         var email = $"{Guid.NewGuid():N}@example.com";
-        await createUseCase.ExecuteAsync(new CreateUserInput(email, "Alice"));
+        await createUseCase.ExecuteAsync(new CreateUserInput("Alice", email));
 
         // Act
         var output = await loginUseCase.ExecuteAsync(new LoginInput(email));

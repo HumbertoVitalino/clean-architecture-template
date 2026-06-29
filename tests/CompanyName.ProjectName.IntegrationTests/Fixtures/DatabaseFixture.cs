@@ -29,6 +29,7 @@ public sealed class DatabaseFixture : IAsyncLifetime
             .Build();
 
         var services = new ServiceCollection();
+        services.AddSingleton<IConfiguration>(configuration);
         services.AddApplication();
         services.AddInfrastructure(configuration);
 

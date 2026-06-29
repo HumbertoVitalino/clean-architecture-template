@@ -1,3 +1,3 @@
 namespace CompanyName.ProjectName.Application.UseCases.Users.GetUserById.Boundaries;
 
-public sealed record GetUserByIdInput(Guid Id);
+public sealed record GetUserByIdInput(Guid Id, Guid CorrelationId = default);

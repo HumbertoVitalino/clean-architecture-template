@@ -1,4 +1,5 @@
 using System.Text;
+using Asp.Versioning;
 using CompanyName.ProjectName.Api.Validators.Auth;
 using CompanyName.ProjectName.Api.Validators.Users;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -30,11 +31,19 @@ public static class DependencyInjection
                 };
             });
 
+        services.AddApiVersioning(options =>
+        {
+            options.DefaultApiVersion = new ApiVersion(1);
+            options.AssumeDefaultVersionWhenUnspecified = true;
+            options.ReportApiVersions = true;
+            options.ApiVersionReader = new UrlSegmentApiVersionReader();
+        });
+
         services.AddAuthorization();
         services.AddProblemDetails();
 
-        services.AddScoped<CreateUserInputValidator>();
-        services.AddScoped<LoginInputValidator>();
+        services.AddScoped<CreateUserRequestValidator>();
+        services.AddScoped<LoginRequestValidator>();
 
         services.AddOpenApi(options =>
         {

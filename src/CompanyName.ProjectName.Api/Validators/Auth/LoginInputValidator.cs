@@ -1,12 +1,12 @@
-using CompanyName.ProjectName.Application.UseCases.Users.Login.Boundaries;
+using CompanyName.ProjectName.Api.Requests.Auth;
 using CompanyName.ProjectName.Domain.Users;
 using FluentValidation;
 
 namespace CompanyName.ProjectName.Api.Validators.Auth;
 
-public sealed class LoginInputValidator : AbstractValidator<LoginInput>
+public sealed class LoginRequestValidator : AbstractValidator<LoginRequest>
 {
-    public LoginInputValidator()
+    public LoginRequestValidator()
     {
         RuleFor(x => x.Email)
             .NotEmpty()

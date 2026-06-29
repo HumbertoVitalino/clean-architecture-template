@@ -1,5 +1,6 @@
 using CompanyName.ProjectName.Api.Endpoints;
 using CompanyName.ProjectName.Api.IoC;
+using CompanyName.ProjectName.Api.Middleware;
 using CompanyName.ProjectName.Application.IoC;
 using CompanyName.ProjectName.Infrastructure.IoC;
 
@@ -18,6 +19,7 @@ if (app.Environment.IsDevelopment())
     app.Services.MigrateDatabase();
 }
 
+app.UseMiddleware<CorrelationIdMiddleware>();
 app.UseExceptionHandler();
 app.UseHttpsRedirection();
 app.UseAuthentication();
