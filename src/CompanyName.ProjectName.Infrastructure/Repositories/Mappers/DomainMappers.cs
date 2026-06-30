@@ -6,5 +6,5 @@ namespace CompanyName.ProjectName.Infrastructure.Repositories.Mappers;
 internal static class DomainMappers
 {
     internal static User MapToDomain(this UserModel model) =>
-        new(model.Id, Email.Create(model.Email), model.Name);
+        new(model.Id, new Email(model.Email), model.Name);
 }
