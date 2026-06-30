@@ -30,7 +30,7 @@ public sealed class CreateUserUseCase(
             return output;
         }
 
-        var user = User.Create(input.Email, input.Name);
+        var user = User.Create(input.Email, input.Name, input.Role);
         await _repository.AddAsync(user, cancellationToken);
 
         var committed = await _repository.UnitOfWork.CommitAsync(cancellationToken);

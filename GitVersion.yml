@@ -1,0 +1,19 @@
+mode: ContinuousDelivery
+branches:
+  release:
+    regex: ^release$
+    label: ''
+    increment: Patch
+    is-mainline: true
+  develop:
+    regex: ^develop$
+    label: alpha
+    increment: Minor
+  feature:
+    regex: ^feature/.*
+    label: useBranchName
+    increment: Inherit
+major-version-bump-message: '^(breaking|major)(\(.+\))?!?:|BREAKING CHANGE'
+minor-version-bump-message: '^feat(\(.+\))?:'
+patch-version-bump-message: '^fix(\(.+\))?:'
+no-bump-message: '^(chore|docs|style|refactor|test|ci)(\(.+\))?:'
