@@ -38,6 +38,10 @@ public sealed class AppDbContext(
                 .HasMaxLength(100)
                 .IsRequired();
 
+            entity.Property(u => u.Role)
+                .HasMaxLength(20)
+                .IsRequired();
+
             entity.Property(u => u.CreatedAt)
                 .HasDefaultValueSql("GETUTCDATE()")
                 .IsRequired();

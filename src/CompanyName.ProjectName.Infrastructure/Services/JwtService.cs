@@ -9,7 +9,7 @@ namespace CompanyName.ProjectName.Infrastructure.Services;
 
 internal sealed class JwtService(IConfiguration configuration) : IJwtService
 {
-    public string GenerateToken(string userId, string email)
+    public string GenerateToken(string userId, string email, string role)
     {
         var key = new SymmetricSecurityKey(
             Encoding.UTF8.GetBytes(configuration["Jwt:SecretKey"]!));
@@ -17,7 +17,8 @@ internal sealed class JwtService(IConfiguration configuration) : IJwtService
         var claims = new[]
         {
             new Claim(ClaimTypes.NameIdentifier, userId),
-            new Claim(ClaimTypes.Email, email)
+            new Claim(ClaimTypes.Email, email),
+            new Claim(ClaimTypes.Role, role)
         };
 
         var expiration = int.TryParse(configuration["Jwt:ExpirationInMinutes"], out var minutes)

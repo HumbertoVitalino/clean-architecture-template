@@ -18,7 +18,7 @@ public static class UsersEndpoints
         var group = app.MapGroup("/api/v{version:apiVersion}/users")
             .WithApiVersionSet(versionSet)
             .WithTags("Users")
-            .RequireAuthorization();
+            .RequireAuthorization("UserOnly");
 
         group.MapPost("", async (
             CreateUserRequest request,
