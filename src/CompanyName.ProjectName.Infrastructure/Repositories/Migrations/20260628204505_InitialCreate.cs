@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace CompanyName.ProjectName.Infrastructure.Persistence.Migrations
+namespace CompanyName.ProjectName.Infrastructure.Repositories.Migrations
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration

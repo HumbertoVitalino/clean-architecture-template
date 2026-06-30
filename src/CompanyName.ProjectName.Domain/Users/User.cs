@@ -5,7 +5,7 @@ namespace CompanyName.ProjectName.Domain.Users;
 
 public sealed class User : AggregateRoot<Guid>
 {
-    private User(Guid id, Email email, string name) : base(id)
+    internal User(Guid id, Email email, string name) : base(id)
     {
         Email = email;
         Name = name;
@@ -30,7 +30,4 @@ public sealed class User : AggregateRoot<Guid>
     {
         Email = Email.Create(email);
     }
-
-    public static User Reconstitute(Guid id, Email email, string name) =>
-        new(id, email, name);
 }

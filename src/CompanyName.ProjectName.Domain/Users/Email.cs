@@ -8,7 +8,7 @@ public sealed class Email : ValueObject
 
     public string Value { get; }
 
-    private Email(string value) => Value = value;
+    internal Email(string value) => Value = value;
 
     public static Email Create(string email)
     {
