@@ -3,7 +3,7 @@
   <PropertyGroup>
     <PackageId>HumbertoVitalino.CleanArchitecture.Template</PackageId>
     <PackageType>Template</PackageType>
-    <PackageVersion>1.0.0</PackageVersion>
+    <PackageVersion Condition="'$(PackageVersion)' == ''">0.1.0</PackageVersion>
     <Title>Clean Architecture API Template</Title>
     <Authors>HumbertoVitalino</Authors>
     <Description>A .NET 10 Clean Architecture template with DDD, JWT auth, EF Core SQL Server, integration tests and Docker support.</Description>
