@@ -1,11 +1,11 @@
 using CompanyName.ProjectName.Application.Interfaces;
 using CompanyName.ProjectName.Application.Interfaces.Repositories;
 using CompanyName.ProjectName.Domain.Users;
-using CompanyName.ProjectName.Infrastructure.Persistence.Mappers;
-using CompanyName.ProjectName.Infrastructure.Persistence.Models;
+using CompanyName.ProjectName.Infrastructure.Repositories.Mappers;
+using CompanyName.ProjectName.Infrastructure.Repositories.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace CompanyName.ProjectName.Infrastructure.Persistence.Repositories;
+namespace CompanyName.ProjectName.Infrastructure.Repositories;
 
 internal sealed class UserRepository(AppDbContext context) : IUserRepository
 {

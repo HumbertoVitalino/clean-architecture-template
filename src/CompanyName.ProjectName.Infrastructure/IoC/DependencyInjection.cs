@@ -1,7 +1,6 @@
 using CompanyName.ProjectName.Application.Interfaces.Repositories;
 using CompanyName.ProjectName.Application.Interfaces.Services;
-using CompanyName.ProjectName.Infrastructure.Persistence;
-using CompanyName.ProjectName.Infrastructure.Persistence.Repositories;
+using CompanyName.ProjectName.Infrastructure.Repositories;
 using CompanyName.ProjectName.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;

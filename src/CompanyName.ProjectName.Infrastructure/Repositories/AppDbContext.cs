@@ -1,10 +1,11 @@
 using CompanyName.ProjectName.Application.Interfaces;
 using CompanyName.ProjectName.Application.Interfaces.Services;
 using CompanyName.ProjectName.Domain.Abstractions;
-using CompanyName.ProjectName.Infrastructure.Persistence.Models;
+using CompanyName.ProjectName.Domain.Users;
+using CompanyName.ProjectName.Infrastructure.Repositories.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace CompanyName.ProjectName.Infrastructure.Persistence;
+namespace CompanyName.ProjectName.Infrastructure.Repositories;
 
 public sealed class AppDbContext(
     DbContextOptions<AppDbContext> options,
@@ -18,8 +19,30 @@ public sealed class AppDbContext(
     internal void EnqueueDomainEvents(IEnumerable<IDomainEvent> events) =>
         _pendingEvents.AddRange(events);
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder) =>
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<UserModel>(entity =>
+        {
+            entity.ToTable("Users");
+
+            entity.HasKey(u => u.Id);
+
+            entity.Property(u => u.Email)
+                .HasMaxLength(Email.MaxLength)
+                .IsRequired();
+
+            entity.HasIndex(u => u.Email)
+                .IsUnique();
+
+            entity.Property(u => u.Name)
+                .HasMaxLength(100)
+                .IsRequired();
+
+            entity.Property(u => u.CreatedAt)
+                .HasDefaultValueSql("GETUTCDATE()")
+                .IsRequired();
+        });
+    }
 
     public async Task<bool> CommitAsync(CancellationToken cancellationToken = default)
     {
