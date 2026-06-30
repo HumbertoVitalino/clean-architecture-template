@@ -29,7 +29,9 @@
     <Content Include=".template.config\**\*" />
     <Content Include=".dockerignore" />
     <Content Include=".env.example" />
-    <Content Include=".github\**\*" />
+    <!-- cd.yml publishes this repo's own Docker image and NuGet template package;
+         it is meaningless in a project generated from the template, so it is excluded. -->
+    <Content Include=".github\**\*" Exclude=".github\workflows\cd.yml" />
 
     <!-- Source and test files -->
     <Content Include="src\**\*" Exclude="src\**\bin\**;src\**\obj\**;**\*.user" />
@@ -40,6 +42,7 @@
     <Content Include="*.props" />
     <Content Include="Dockerfile" />
     <Content Include="docker-compose.yml" />
+    <Content Include="docker-compose.tests.yml" />
 
     <!-- README at package root (not under content/) -->
     <None Include="README.md" Pack="true" PackagePath="\" />
