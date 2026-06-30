@@ -1,11 +1,11 @@
 using CompanyName.ProjectName.Application.Interfaces;
 using CompanyName.ProjectName.Application.Interfaces.Repositories;
 using CompanyName.ProjectName.Domain.Users;
-using CompanyName.ProjectName.Infrastructure.Persistence.Mappers;
-using CompanyName.ProjectName.Infrastructure.Persistence.Models;
+using CompanyName.ProjectName.Infrastructure.Repositories.Mappers;
+using CompanyName.ProjectName.Infrastructure.Repositories.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace CompanyName.ProjectName.Infrastructure.Persistence.Repositories;
+namespace CompanyName.ProjectName.Infrastructure.Repositories;
 
 internal sealed class UserRepository(AppDbContext context) : IUserRepository
 {
@@ -17,7 +17,7 @@ internal sealed class UserRepository(AppDbContext context) : IUserRepository
             .AsNoTracking()
             .FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
 
-        return model?.ToDomain();
+        return model?.MapToDomain();
     }
 
     public async Task<User?> GetByEmailAsync(Email email, CancellationToken cancellationToken = default)
@@ -26,7 +26,7 @@ internal sealed class UserRepository(AppDbContext context) : IUserRepository
             .AsNoTracking()
             .FirstOrDefaultAsync(u => u.Email == email.Value, cancellationToken);
 
-        return model?.ToDomain();
+        return model?.MapToDomain();
     }
 
     public async Task<bool> ExistsWithEmailAsync(Email email, CancellationToken cancellationToken = default) =>
@@ -36,7 +36,7 @@ internal sealed class UserRepository(AppDbContext context) : IUserRepository
     {
         context.EnqueueDomainEvents(entity.GetDomainEvents());
         entity.ClearDomainEvents();
-        await context.Users.AddAsync(entity.ToModel(), cancellationToken);
+        await context.Users.AddAsync(entity.MapToModel(), cancellationToken);
     }
 
     public void Update(User entity)
@@ -44,7 +44,7 @@ internal sealed class UserRepository(AppDbContext context) : IUserRepository
         context.EnqueueDomainEvents(entity.GetDomainEvents());
         entity.ClearDomainEvents();
 
-        var model = entity.ToModel();
+        var model = entity.MapToModel();
         var tracked = context.ChangeTracker.Entries<UserModel>()
             .FirstOrDefault(e => e.Entity.Id == entity.Id);
 
@@ -62,6 +62,6 @@ internal sealed class UserRepository(AppDbContext context) : IUserRepository
         if (tracked is not null)
             tracked.State = EntityState.Deleted;
         else
-            context.Users.Remove(entity.ToModel());
+            context.Users.Remove(entity.MapToModel());
     }
 }
