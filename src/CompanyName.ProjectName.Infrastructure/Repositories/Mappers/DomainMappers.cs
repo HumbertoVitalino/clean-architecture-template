@@ -3,8 +3,8 @@ using CompanyName.ProjectName.Infrastructure.Repositories.Models;
 
 namespace CompanyName.ProjectName.Infrastructure.Repositories.Mappers;
 
-internal static class UserModelMapper
+internal static class DomainMappers
 {
-    internal static UserModel ToModel(this User user) =>
-        new(user.Id, user.Email.Value, user.Name);
+    internal static User MapToDomain(this UserModel model) =>
+        new(model.Id, Email.Create(model.Email), model.Name);
 }

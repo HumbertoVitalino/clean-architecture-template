@@ -1,5 +1,6 @@
 using Asp.Versioning;
 using Asp.Versioning.Builder;
+using CompanyName.ProjectName.Api.Mappers.Users;
 using CompanyName.ProjectName.Api.Requests.Users;
 using CompanyName.ProjectName.Api.Validators.Users;
 using CompanyName.ProjectName.Application.Commons;
@@ -23,7 +24,7 @@ public static class UsersEndpoints
             CreateUserRequest request,
             ICreateUserUseCase useCase,
             CreateUserRequestValidator validator,
-            [FromHeader(Name = "X-Correlation-Id")] Guid correlationId,
+            [FromHeader(Name = "X-Correlation-Id")] Guid? correlationId,
             CancellationToken cancellationToken) =>
         {
             var validation = validator.Validate(request);
@@ -49,10 +50,10 @@ public static class UsersEndpoints
         group.MapGet("{id:guid}", async (
             Guid id,
             IGetUserByIdUseCase useCase,
-            [FromHeader(Name = "X-Correlation-Id")] Guid correlationId,
+            [FromHeader(Name = "X-Correlation-Id")] Guid? correlationId,
             CancellationToken cancellationToken) =>
         {
-            var output = await useCase.ExecuteAsync(new GetUserByIdInput(id, correlationId), cancellationToken);
+            var output = await useCase.ExecuteAsync(new GetUserByIdInput(id, correlationId ?? Guid.NewGuid()), cancellationToken);
 
             if (!output.IsValid)
                 return Results.NotFound(output);
