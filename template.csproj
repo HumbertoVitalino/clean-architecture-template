@@ -29,6 +29,7 @@
     <Content Include=".template.config\**\*" />
     <Content Include=".dockerignore" />
     <Content Include=".env.example" />
+    <Content Include=".gitignore" />
     <!-- cd.yml publishes this repo's own Docker image and NuGet template package;
          it is meaningless in a project generated from the template, so it is excluded. -->
     <Content Include=".github\**\*" Exclude=".github\workflows\cd.yml" />
