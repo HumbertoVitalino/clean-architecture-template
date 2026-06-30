@@ -34,7 +34,7 @@ public sealed class LoginUseCase(
             return output;
         }
 
-        var token = _jwtService.GenerateToken(user.Id.ToString(), user.Email.Value);
+        var token = _jwtService.GenerateToken(user.Id.ToString(), user.Email.Value, user.Role.ToString());
         output.AddResult(new LoginResponse(token));
         return output;
     }
