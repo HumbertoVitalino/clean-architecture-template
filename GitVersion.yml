@@ -4,7 +4,7 @@ branches:
     regex: ^release$
     label: ''
     increment: Patch
-    is-mainline: true
+    is-main-branch: true
   develop:
     regex: ^develop$
     label: alpha
