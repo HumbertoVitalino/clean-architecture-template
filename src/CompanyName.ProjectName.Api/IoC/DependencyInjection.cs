@@ -5,6 +5,11 @@ using CompanyName.ProjectName.Api.Validators.Users;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
+using Npgsql;
+using OpenTelemetry;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 using Serilog;
 using Serilog.Events;
 
@@ -12,6 +17,8 @@ namespace CompanyName.ProjectName.Api.IoC;
 
 public static class DependencyInjection
 {
+    private const string ServiceName = "CompanyName.ProjectName";
+
     public static IServiceCollection AddApi(
         this IServiceCollection services,
         IConfiguration configuration)
@@ -101,6 +108,20 @@ public static class DependencyInjection
             .Enrich.FromLogContext()
             .Enrich.WithProperty("CorrelationId", "-")
             .WriteTo.Console(outputTemplate: "[{CorrelationId}] | {Message:lj}{NewLine}{Exception}"));
+
+        services.AddOpenTelemetry()
+            .ConfigureResource(resource => resource.AddService(ServiceName))
+            .WithTracing(tracing => tracing
+                .AddAspNetCoreInstrumentation()
+                .AddHttpClientInstrumentation()
+                .AddNpgsql()
+                .AddConsoleExporter())
+            .WithMetrics(metrics => metrics
+                .AddAspNetCoreInstrumentation()
+                .AddHttpClientInstrumentation()
+                .AddRuntimeInstrumentation()
+                .AddNpgsqlInstrumentation()
+                .AddConsoleExporter());
 
         return services;
     }
