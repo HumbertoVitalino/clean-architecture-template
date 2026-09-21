@@ -50,19 +50,22 @@ public static class UsersEndpoints
         .Produces<Output>(StatusCodes.Status201Created)
         .Produces<Output>(StatusCodes.Status400BadRequest);
 
-        group.MapGet("{id:guid}", async (
-            Guid id,
-            IGetUserByIdUseCase useCase,
-            [FromHeader(Name = "X-Correlation-Id")] Guid? correlationId,
-            CancellationToken cancellationToken) =>
-        {
-            var output = await useCase.ExecuteAsync(new GetUserByIdInput(id, correlationId ?? Guid.NewGuid()), cancellationToken);
+        group.MapGet("{id:guid}",
+            async (
+                Guid id,
+                IGetUserByIdUseCase useCase,
+                [FromHeader(Name = "X-Correlation-Id")] Guid? correlationId,
+                CancellationToken cancellationToken)
+            =>
+            {
+                var output = await useCase.ExecuteAsync(new GetUserByIdInput(id, correlationId ?? Guid.NewGuid()), cancellationToken);
 
-            if (!output.IsValid)
-                return Results.NotFound(output);
+                if (!output.IsValid)
+                    return Results.NotFound(output);
 
-            return Results.Ok(output);
-        })
+                return Results.Ok(output);
+            }
+        )
         .WithName("GetUserById")
         .Produces<Output>()
         .Produces<Output>(StatusCodes.Status404NotFound);
