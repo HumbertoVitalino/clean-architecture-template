@@ -20,28 +20,31 @@ public static class UsersEndpoints
             .WithTags("Users")
             .RequireAuthorization("UserOnly");
 
-        group.MapPost("", async (
-            CreateUserRequest request,
-            ICreateUserUseCase useCase,
-            CreateUserRequestValidator validator,
-            [FromHeader(Name = "X-Correlation-Id")] Guid? correlationId,
-            CancellationToken cancellationToken) =>
-        {
-            var validation = validator.Validate(request);
-            if (!validation.IsValid)
+        group.MapPost("",
+            async (
+                CreateUserRequest request,
+                ICreateUserUseCase useCase,
+                CreateUserRequestValidator validator,
+                [FromHeader(Name = "X-Correlation-Id")] Guid? correlationId,
+                CancellationToken cancellationToken
+            ) =>
             {
-                Output validationOutput = new();
-                validationOutput.AddErrorMessages(validation.Errors.Select(e => e.ErrorMessage));
-                return Results.BadRequest(validationOutput);
+                var validation = validator.Validate(request);
+                if (!validation.IsValid)
+                {
+                    Output validationOutput = new();
+                    validationOutput.AddErrorMessages(validation.Errors.Select(e => e.ErrorMessage));
+                    return Results.BadRequest(validationOutput);
+                }
+
+                var output = await useCase.ExecuteAsync(request.MapToInput(correlationId), cancellationToken);
+
+                if (!output.IsValid)
+                    return Results.BadRequest(output);
+
+                return Results.Created($"/api/v1/users/{output.GetResult<UserResponse>()!.Id}", output);
             }
-
-            var output = await useCase.ExecuteAsync(request.MapToInput(correlationId), cancellationToken);
-
-            if (!output.IsValid)
-                return Results.BadRequest(output);
-
-            return Results.Created($"/api/v1/users/{output.GetResult<UserResponse>()!.Id}", output);
-        })
+        )
         .AllowAnonymous()
         .WithName("CreateUser")
         .Produces<Output>(StatusCodes.Status201Created)
