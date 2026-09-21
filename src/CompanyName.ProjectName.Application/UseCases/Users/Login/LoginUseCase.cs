@@ -27,9 +27,7 @@ public sealed class LoginUseCase(
         var user = await _userRepository.GetByEmailAsync(email, cancellationToken);
         if (user is null)
         {
-            _logger.LogWarning(
-                "Login failed: user not found. Email: {Email} | CorrelationId: {CorrelationId}",
-                input.Email, input.CorrelationId);
+            _logger.LogWarning("Login failed: user not found. Email: {Email}", input.Email);
             output.AddErrorMessage("Invalid credentials.");
             return output;
         }

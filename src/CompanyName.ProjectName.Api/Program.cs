@@ -1,7 +1,9 @@
 using CompanyName.ProjectName.Api.Endpoints;
 using CompanyName.ProjectName.Api.IoC;
+using CompanyName.ProjectName.Api.Middlewares;
 using CompanyName.ProjectName.Application.IoC;
 using CompanyName.ProjectName.Infrastructure.IoC;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +13,9 @@ builder.Services
     .AddApi(builder.Configuration);
 
 var app = builder.Build();
+
+app.UseMiddleware<CorrelationIdLoggingMiddleware>();
+app.UseSerilogRequestLogging();
 
 app.MapOpenApi();
 app.UseSwaggerUI(options =>

@@ -5,6 +5,8 @@ using CompanyName.ProjectName.Api.Validators.Users;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
+using Serilog;
+using Serilog.Events;
 
 namespace CompanyName.ProjectName.Api.IoC;
 
@@ -14,6 +16,8 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
+        services.AddObservability();
+
         services
             .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
@@ -84,6 +88,19 @@ public static class DependencyInjection
 
         services.AddScoped<CreateUserRequestValidator>();
         services.AddScoped<LoginRequestValidator>();
+
+        return services;
+    }
+
+    private static IServiceCollection AddObservability(this IServiceCollection services)
+    {
+        services.AddSerilog((provider, loggerConfiguration) => loggerConfiguration
+            .ReadFrom.Services(provider)
+            .MinimumLevel.Information()
+            .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
+            .Enrich.FromLogContext()
+            .Enrich.WithProperty("CorrelationId", "-")
+            .WriteTo.Console(outputTemplate: "[{CorrelationId}] | {Message:lj}{NewLine}{Exception}"));
 
         return services;
     }

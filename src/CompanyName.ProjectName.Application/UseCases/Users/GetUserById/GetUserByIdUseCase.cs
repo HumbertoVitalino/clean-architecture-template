@@ -23,9 +23,7 @@ public sealed class GetUserByIdUseCase(
         var user = await _repository.GetByIdAsync(input.Id, cancellationToken);
         if (user is null)
         {
-            _logger.LogWarning(
-                "Get user failed: not found. UserId: {UserId} | CorrelationId: {CorrelationId}",
-                input.Id, input.CorrelationId);
+            _logger.LogWarning("Get user failed: not found. UserId: {UserId}", input.Id);
             output.AddErrorMessage(UserErrors.NotFound);
             return output;
         }
