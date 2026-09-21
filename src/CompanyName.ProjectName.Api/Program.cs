@@ -19,8 +19,6 @@ app.UseSwaggerUI(options =>
     options.RoutePrefix = "swagger";
 });
 
-app.Services.MigrateDatabase();
-
 app.UseExceptionHandler();
 app.UseHttpsRedirection();
 app.UseAuthentication();

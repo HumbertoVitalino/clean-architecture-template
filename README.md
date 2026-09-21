@@ -40,18 +40,28 @@ All occurrences of `CompanyName.ProjectName` in namespaces, project names and fo
 
 ## Running locally
 
+Migrations are **not** applied automatically on startup — run them manually with the EF Core CLI (`dotnet tool install --global dotnet-ef` if you don't have it):
+
+```bash
+dotnet ef database update \
+  --project src/MyCompany.MyProject.Infrastructure \
+  --startup-project src/MyCompany.MyProject.Api
+```
+
 ### With Docker
 
 ```bash
 cp .env.example .env
 # Fill in the values in .env
 docker compose up -d
+# Apply migrations against the containerized database (exposed on localhost:5432)
+dotnet ef database update --project src/MyCompany.MyProject.Infrastructure --startup-project src/MyCompany.MyProject.Api
 ```
 
 ### Without Docker
 
 ```bash
-# Start PostgreSQL separately and set the connection string
+# Start PostgreSQL separately, set the connection string, then apply migrations (see above)
 dotnet run --project src/MyCompany.MyProject.Api
 ```
 
