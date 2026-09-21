@@ -12,8 +12,12 @@ builder.Services
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-    app.MapOpenApi();
+app.MapOpenApi();
+app.UseSwaggerUI(options =>
+{
+    options.SwaggerEndpoint("/openapi/v1.json", "CompanyName.ProjectName API v1");
+    options.RoutePrefix = "swagger";
+});
 
 app.Services.MigrateDatabase();
 
@@ -21,6 +25,8 @@ app.UseExceptionHandler();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapGet("/", () => Results.Redirect("/swagger")).ExcludeFromDescription();
 
 app.MapEndpoints();
 

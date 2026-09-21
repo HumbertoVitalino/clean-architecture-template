@@ -37,17 +37,11 @@ public static class DependencyInjection
             options.AssumeDefaultVersionWhenUnspecified = true;
             options.ReportApiVersions = true;
             options.ApiVersionReader = new UrlSegmentApiVersionReader();
-        });
-
-        services.AddAuthorization(options =>
+        }).AddApiExplorer(options =>
         {
-            options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
-            options.AddPolicy("UserOnly", policy => policy.RequireRole("User", "Admin"));
+            options.GroupNameFormat = "'v'VVV";
+            options.SubstituteApiVersionInUrl = true;
         });
-        services.AddProblemDetails();
-
-        services.AddScoped<CreateUserRequestValidator>();
-        services.AddScoped<LoginRequestValidator>();
 
         services.AddOpenApi(options =>
         {
@@ -71,9 +65,25 @@ public static class DependencyInjection
                     }
                 };
 
+                document.Security ??= [];
+                document.Security.Add(new OpenApiSecurityRequirement
+                {
+                    [new OpenApiSecuritySchemeReference("Bearer", document, null)] = []
+                });
+
                 return Task.CompletedTask;
             });
         });
+
+        services.AddAuthorization(options =>
+        {
+            options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+            options.AddPolicy("UserOnly", policy => policy.RequireRole("User", "Admin"));
+        });
+        services.AddProblemDetails();
+
+        services.AddScoped<CreateUserRequestValidator>();
+        services.AddScoped<LoginRequestValidator>();
 
         return services;
     }
