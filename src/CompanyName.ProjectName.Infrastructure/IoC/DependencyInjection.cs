@@ -12,10 +12,12 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(
         this IServiceCollection services,
-        IConfiguration configuration)
+        IConfiguration configuration
+    )
     {
         services.AddDbContext<AppDbContext>(options =>
-            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+            options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"))
+                   .UseSnakeCaseNamingConvention());
 
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IDomainEventDispatcher, DomainEventDispatcher>();

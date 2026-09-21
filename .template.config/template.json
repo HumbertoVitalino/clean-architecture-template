@@ -4,7 +4,7 @@
   "classifications": ["Web", "API"],
   "identity": "HumbertoVitalino.CleanArchitecture.Template",
   "name": "Clean Architecture API",
-  "description": "A .NET 10 Clean Architecture template with DDD, JWT auth, EF Core SQL Server, integration tests and Docker support.",
+  "description": "A .NET 10 Clean Architecture template with DDD, JWT auth, EF Core PostgreSQL, integration tests and Docker support.",
   "shortName": "clean-arch",
   "language": "C#",
   "tags": {

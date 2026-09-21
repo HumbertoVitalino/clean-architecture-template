@@ -6,7 +6,7 @@
     <PackageVersion Condition="'$(PackageVersion)' == ''">0.1.0</PackageVersion>
     <Title>Clean Architecture API Template</Title>
     <Authors>HumbertoVitalino</Authors>
-    <Description>A .NET 10 Clean Architecture template with DDD, JWT auth, EF Core SQL Server, integration tests and Docker support.</Description>
+    <Description>A .NET 10 Clean Architecture template with DDD, JWT auth, EF Core PostgreSQL, integration tests and Docker support.</Description>
     <PackageTags>template;dotnet;clean-architecture;ddd;api;csharp</PackageTags>
     <PackageProjectUrl>https://github.com/HumbertoVitalino/clean-architecture-template</PackageProjectUrl>
     <RepositoryUrl>https://github.com/HumbertoVitalino/clean-architecture-template</RepositoryUrl>
