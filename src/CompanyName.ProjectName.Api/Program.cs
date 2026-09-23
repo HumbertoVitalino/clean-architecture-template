@@ -2,6 +2,7 @@ using CompanyName.ProjectName.Api.Endpoints;
 using CompanyName.ProjectName.Api.IoC;
 using CompanyName.ProjectName.Application.IoC;
 using CompanyName.ProjectName.Infrastructure.IoC;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,15 +13,21 @@ builder.Services
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-    app.MapOpenApi();
+app.UseSerilogRequestLogging();
 
-app.Services.MigrateDatabase();
+app.MapOpenApi();
+app.UseSwaggerUI(options =>
+{
+    options.SwaggerEndpoint("/openapi/v1.json", "CompanyName.ProjectName API v1");
+    options.RoutePrefix = "swagger";
+});
 
 app.UseExceptionHandler();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapGet("/", () => Results.Redirect("/swagger")).ExcludeFromDescription();
 
 app.MapEndpoints();
 
