@@ -106,8 +106,7 @@ public static class DependencyInjection
             .MinimumLevel.Information()
             .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
             .Enrich.FromLogContext()
-            .Enrich.WithProperty("CorrelationId", "-")
-            .WriteTo.Console(outputTemplate: "[{CorrelationId}] | {Message:lj}{NewLine}{Exception}"));
+            .WriteTo.Console(outputTemplate: "{Message:lj}{NewLine}{Exception}"));
 
         services.AddOpenTelemetry()
             .ConfigureResource(resource => resource.AddService(ServiceName))
