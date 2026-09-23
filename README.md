@@ -16,8 +16,8 @@ A `dotnet new` template for .NET 10 APIs following Clean Architecture and Domain
 - **Minimal API endpoints** — versioned routes (`/api/v1/...`), `Request` → `MapToInput` pattern, `[FromHeader]` CorrelationId
 - **FluentValidation** — validators in the API layer only, validating before entering use cases
 - **EF Core + PostgreSQL** — migrations, repository pattern, Unit of Work
-- **CorrelationId middleware** — propagates or generates `X-Correlation-Id` on every request
-- **Structured logging** — `ILogger<T>` with CorrelationId on all error paths
+- **CorrelationId** — bound from the `X-Correlation-Id` request header (or generated) into every use case `Input`
+- **Structured logging** — `ILogger<T>` calls prefixed with `[{CorrelationId}] |` manually on all error paths
 - **Unit tests** — xUnit + FluentAssertions + NullLogger
 - **Integration tests** — xUnit + docker-compose PostgreSQL, full use case flow
 - **Docker** — multi-stage Dockerfile, docker-compose with named volume, `.env.example`
