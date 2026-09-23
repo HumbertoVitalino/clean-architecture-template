@@ -23,8 +23,6 @@ public sealed class AppDbContext(
     {
         modelBuilder.Entity<UserModel>(entity =>
         {
-            entity.ToTable("Users");
-
             entity.HasKey(u => u.Id);
 
             entity.Property(u => u.Email)
@@ -43,7 +41,8 @@ public sealed class AppDbContext(
                 .IsRequired();
 
             entity.Property(u => u.CreatedAt)
-                .HasDefaultValueSql("GETUTCDATE()")
+                .HasColumnType("timestamptz")
+                .HasDefaultValueSql("now()")
                 .IsRequired();
         });
     }

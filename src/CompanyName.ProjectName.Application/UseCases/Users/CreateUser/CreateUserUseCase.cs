@@ -24,8 +24,9 @@ public sealed class CreateUserUseCase(
         if (await _repository.ExistsWithEmailAsync(email, cancellationToken))
         {
             _logger.LogWarning(
-                "Create user failed: email already in use. Email: {Email} | CorrelationId: {CorrelationId}",
-                input.Email, input.CorrelationId);
+                "[{CorrelationId}] | Create user failed: email already in use. Email: {Email}",
+                input.CorrelationId, input.Email);
+
             output.AddErrorMessage(UserErrors.EmailAlreadyInUse);
             return output;
         }
@@ -37,8 +38,9 @@ public sealed class CreateUserUseCase(
         if (!committed)
         {
             _logger.LogWarning(
-                "Create user failed: could not persist. Email: {Email} | CorrelationId: {CorrelationId}",
-                input.Email, input.CorrelationId);
+                "[{CorrelationId}] | Create user failed: could not persist. Email: {Email}",
+                input.CorrelationId, input.Email);
+
             output.AddErrorMessage("Failed to persist user.");
             return output;
         }

@@ -1,32 +1,25 @@
-using System.Text.RegularExpressions;
 using CompanyName.ProjectName.Application.IoC;
 using CompanyName.ProjectName.Infrastructure.IoC;
-using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Npgsql;
 using Xunit;
 
 namespace CompanyName.ProjectName.IntegrationTests.Fixtures;
 
 public sealed class DatabaseFixture : IAsyncLifetime
 {
-    private const string DefaultMasterConnectionString =
-        "Server=localhost,1433;User Id=sa;Password=Integration@Test123;TrustServerCertificate=True;";
-
     private const string DefaultTestConnectionString =
-        "Server=localhost,1433;Database=IntegrationTestsDb;User Id=sa;Password=Integration@Test123;TrustServerCertificate=True;";
+        "Host=localhost;Port=5432;Database=integration_tests_db;Username=postgres;Password=Integration@Test123";
 
     public IServiceProvider Services { get; private set; } = null!;
 
     public async Task InitializeAsync()
     {
-        var masterConnectionString = Environment.GetEnvironmentVariable("ConnectionStrings__MasterConnection")
-            ?? DefaultMasterConnectionString;
-
         var testConnectionString = Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection")
             ?? DefaultTestConnectionString;
 
-        await ExecuteInitScriptAsync(masterConnectionString);
+        await ExecuteInitScriptAsync(testConnectionString);
 
         var configuration = new ConfigurationBuilder()
             .AddInMemoryCollection(new Dictionary<string, string?>
@@ -54,18 +47,11 @@ public sealed class DatabaseFixture : IAsyncLifetime
     {
         var sqlPath = Path.Combine(AppContext.BaseDirectory, "sql", "init.sql");
         var sql = await File.ReadAllTextAsync(sqlPath);
-        var batches = Regex.Split(sql, @"^\s*GO\s*$", RegexOptions.Multiline | RegexOptions.IgnoreCase);
 
-        await using var connection = new SqlConnection(connectionString);
+        await using var connection = new NpgsqlConnection(connectionString);
         await connection.OpenAsync();
 
-        foreach (var batch in batches)
-        {
-            var trimmed = batch.Trim();
-            if (string.IsNullOrWhiteSpace(trimmed)) continue;
-
-            await using var command = new SqlCommand(trimmed, connection);
-            await command.ExecuteNonQueryAsync();
-        }
+        await using var command = new NpgsqlCommand(sql, connection);
+        await command.ExecuteNonQueryAsync();
     }
 }

@@ -74,17 +74,17 @@ jobs:
       - name: Restore
         run: dotnet restore CompanyName.ProjectName.slnx
 
-      - name: Start SQL Server
+      - name: Start PostgreSQL
         run: docker compose -f docker-compose.tests.yml up -d
 
-      - name: Wait for SQL Server to be healthy
+      - name: Wait for PostgreSQL to be healthy
         run: |
-          echo "Waiting for SQL Server..."
-          until [ "$(docker inspect integration-sql --format '{{.State.Health.Status}}')" = "healthy" ]; do
+          echo "Waiting for PostgreSQL..."
+          until [ "$(docker inspect integration-postgres --format '{{.State.Health.Status}}')" = "healthy" ]; do
             echo "  still waiting..."
             sleep 5
           done
-          echo "SQL Server is ready."
+          echo "PostgreSQL is ready."
 
       - name: Integration Tests
         run: >
@@ -94,10 +94,9 @@ jobs:
           --configuration Release
           --logger "trx;LogFileName=integration-results.trx"
         env:
-          ConnectionStrings__MasterConnection: "Server=localhost,1433;User Id=sa;Password=Integration@Test123;TrustServerCertificate=True;"
-          ConnectionStrings__DefaultConnection: "Server=localhost,1433;Database=IntegrationTestsDb;User Id=sa;Password=Integration@Test123;TrustServerCertificate=True;"
+          ConnectionStrings__DefaultConnection: "Host=localhost;Port=5432;Database=integration_tests_db;Username=postgres;Password=Integration@Test123"
 
-      - name: Stop SQL Server
+      - name: Stop PostgreSQL
         if: always()
         run: docker compose -f docker-compose.tests.yml down
 

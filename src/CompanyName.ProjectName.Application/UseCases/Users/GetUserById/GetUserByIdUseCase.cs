@@ -24,8 +24,8 @@ public sealed class GetUserByIdUseCase(
         if (user is null)
         {
             _logger.LogWarning(
-                "Get user failed: not found. UserId: {UserId} | CorrelationId: {CorrelationId}",
-                input.Id, input.CorrelationId);
+                "[{CorrelationId}] | Get user failed: not found. UserId: {UserId}",
+                input.CorrelationId, input.Id);
             output.AddErrorMessage(UserErrors.NotFound);
             return output;
         }

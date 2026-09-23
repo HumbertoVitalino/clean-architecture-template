@@ -5,15 +5,26 @@ using CompanyName.ProjectName.Api.Validators.Users;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
+using Npgsql;
+using OpenTelemetry;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
+using Serilog;
+using Serilog.Events;
 
 namespace CompanyName.ProjectName.Api.IoC;
 
 public static class DependencyInjection
 {
+    private const string ServiceName = "CompanyName.ProjectName";
+
     public static IServiceCollection AddApi(
         this IServiceCollection services,
         IConfiguration configuration)
     {
+        services.AddObservability();
+
         services
             .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
@@ -37,17 +48,11 @@ public static class DependencyInjection
             options.AssumeDefaultVersionWhenUnspecified = true;
             options.ReportApiVersions = true;
             options.ApiVersionReader = new UrlSegmentApiVersionReader();
-        });
-
-        services.AddAuthorization(options =>
+        }).AddApiExplorer(options =>
         {
-            options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
-            options.AddPolicy("UserOnly", policy => policy.RequireRole("User", "Admin"));
+            options.GroupNameFormat = "'v'VVV";
+            options.SubstituteApiVersionInUrl = true;
         });
-        services.AddProblemDetails();
-
-        services.AddScoped<CreateUserRequestValidator>();
-        services.AddScoped<LoginRequestValidator>();
 
         services.AddOpenApi(options =>
         {
@@ -71,9 +76,51 @@ public static class DependencyInjection
                     }
                 };
 
+                document.Security ??= [];
+                document.Security.Add(new OpenApiSecurityRequirement
+                {
+                    [new OpenApiSecuritySchemeReference("Bearer", document, null)] = []
+                });
+
                 return Task.CompletedTask;
             });
         });
+
+        services.AddAuthorization(options =>
+        {
+            options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+            options.AddPolicy("UserOnly", policy => policy.RequireRole("User", "Admin"));
+        });
+        services.AddProblemDetails();
+
+        services.AddScoped<CreateUserRequestValidator>();
+        services.AddScoped<LoginRequestValidator>();
+
+        return services;
+    }
+
+    private static IServiceCollection AddObservability(this IServiceCollection services)
+    {
+        services.AddSerilog((provider, loggerConfiguration) => loggerConfiguration
+            .ReadFrom.Services(provider)
+            .MinimumLevel.Information()
+            .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
+            .Enrich.FromLogContext()
+            .WriteTo.Console(outputTemplate: "{Message:lj}{NewLine}{Exception}"));
+
+        services.AddOpenTelemetry()
+            .ConfigureResource(resource => resource.AddService(ServiceName))
+            .WithTracing(tracing => tracing
+                .AddAspNetCoreInstrumentation()
+                .AddHttpClientInstrumentation()
+                .AddNpgsql()
+                .AddConsoleExporter())
+            .WithMetrics(metrics => metrics
+                .AddAspNetCoreInstrumentation()
+                .AddHttpClientInstrumentation()
+                .AddRuntimeInstrumentation()
+                .AddNpgsqlInstrumentation()
+                .AddConsoleExporter());
 
         return services;
     }

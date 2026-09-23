@@ -28,8 +28,8 @@ public sealed class LoginUseCase(
         if (user is null)
         {
             _logger.LogWarning(
-                "Login failed: user not found. Email: {Email} | CorrelationId: {CorrelationId}",
-                input.Email, input.CorrelationId);
+                "[{CorrelationId}] | Login failed: user not found. Email: {Email}",
+                input.CorrelationId, input.Email);
             output.AddErrorMessage("Invalid credentials.");
             return output;
         }

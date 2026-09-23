@@ -15,11 +15,11 @@ A `dotnet new` template for .NET 10 APIs following Clean Architecture and Domain
 - **JWT authentication** — Login use case, `IJwtService`, Bearer token validation
 - **Minimal API endpoints** — versioned routes (`/api/v1/...`), `Request` → `MapToInput` pattern, `[FromHeader]` CorrelationId
 - **FluentValidation** — validators in the API layer only, validating before entering use cases
-- **EF Core + SQL Server** — migrations, repository pattern, Unit of Work
-- **CorrelationId middleware** — propagates or generates `X-Correlation-Id` on every request
-- **Structured logging** — `ILogger<T>` with CorrelationId on all error paths
+- **EF Core + PostgreSQL** — migrations, repository pattern, Unit of Work
+- **CorrelationId** — bound from the `X-Correlation-Id` request header (or generated) into every use case `Input`
+- **Structured logging** — `ILogger<T>` calls prefixed with `[{CorrelationId}] |` manually on all error paths
 - **Unit tests** — xUnit + FluentAssertions + NullLogger
-- **Integration tests** — xUnit + docker-compose SQL Server, full use case flow
+- **Integration tests** — xUnit + docker-compose PostgreSQL, full use case flow
 - **Docker** — multi-stage Dockerfile, docker-compose with named volume, `.env.example`
 - **GitHub Actions** — CI for feature and develop branches, CD to GHCR and NuGet on release
 
@@ -40,18 +40,28 @@ All occurrences of `CompanyName.ProjectName` in namespaces, project names and fo
 
 ## Running locally
 
+Migrations are **not** applied automatically on startup — run them manually with the EF Core CLI (`dotnet tool install --global dotnet-ef` if you don't have it):
+
+```bash
+dotnet ef database update \
+  --project src/MyCompany.MyProject.Infrastructure \
+  --startup-project src/MyCompany.MyProject.Api
+```
+
 ### With Docker
 
 ```bash
 cp .env.example .env
 # Fill in the values in .env
 docker compose up -d
+# Apply migrations against the containerized database (exposed on localhost:5432)
+dotnet ef database update --project src/MyCompany.MyProject.Infrastructure --startup-project src/MyCompany.MyProject.Api
 ```
 
 ### Without Docker
 
 ```bash
-# Start SQL Server separately and set the connection string
+# Start PostgreSQL separately, set the connection string, then apply migrations (see above)
 dotnet run --project src/MyCompany.MyProject.Api
 ```
 
